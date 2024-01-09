@@ -8,6 +8,8 @@ async function generatePdf(file, options, callback) {
   let args = [
     '--no-sandbox',
     '--disable-setuid-sandbox',
+    '--max-old-space-size=4096',
+    '--js-flags=--max-old-space-size=4096'
   ];
   if(options.args) {
     args = options.args;
@@ -15,7 +17,8 @@ async function generatePdf(file, options, callback) {
   }
 
   const browser = await puppeteer.launch({
-    args: args
+    args: args,
+    timeout: 1800000, //half hour for timeout max
   });
   const page = await browser.newPage();
 
@@ -29,11 +32,11 @@ async function generatePdf(file, options, callback) {
 
     // We set the page content as the generated html by handlebars
     await page.setContent(html, {
-      waitUntil: 'networkidle0', // wait for page to load completely
+      waitUntil: 'networkidle0', timeout: 60000, // wait for page to load completely and timeout one minutes for a page 
     });
   } else {
     await page.goto(file.url, {
-      waitUntil:[ 'load', 'networkidle0'], // wait for page to load completely
+      waitUntil:[ 'load', 'networkidle0'], timeout: 60000, // wait for page to load completely and timeout one minutes for a page 
     });
   }
 
@@ -50,13 +53,16 @@ async function generatePdfs(files, options, callback) {
   let args = [
     '--no-sandbox',
     '--disable-setuid-sandbox',
+    '--max-old-space-size=4096',
+    '--js-flags=--max-old-space-size=4096'
   ];
   if(options.args) {
     args = options.args;
     delete options.args;
   }
   const browser = await puppeteer.launch({
-    args: args
+    args: args,
+    timeout: 1800000,  //half hour for timeout max
   });
   let pdfs = [];
   const page = await browser.newPage();
@@ -70,11 +76,11 @@ async function generatePdfs(files, options, callback) {
       const html = result;
       // We set the page content as the generated html by handlebars
       await page.setContent(html, {
-        waitUntil: 'networkidle0', // wait for page to load completely
+        waitUntil: 'networkidle0', timeout: 60000, // wait for page to load completely
       });
     } else {
       await page.goto(file.url, {
-        waitUntil: 'networkidle0', // wait for page to load completely
+        waitUntil: 'networkidle0', timeout: 60000, // wait for page to load completely
       });
     }
     let pdfObj = JSON.parse(JSON.stringify(file));
