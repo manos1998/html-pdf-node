@@ -8,9 +8,10 @@ async function generatePdf(file, options, callback) {
   let args = [
     '--no-sandbox',
     '--disable-setuid-sandbox',
-    '--max-old-space-size=4096',
+    '--max-old-space-size=4096', 
     '--js-flags=--max-old-space-size=4096'
   ];
+  // Providing space of 4MB
   if(options.args) {
     args = options.args;
     delete options.args;
@@ -56,6 +57,7 @@ async function generatePdfs(files, options, callback) {
     '--max-old-space-size=4096',
     '--js-flags=--max-old-space-size=4096'
   ];
+  // Providing space of 4MB
   if(options.args) {
     args = options.args;
     delete options.args;
